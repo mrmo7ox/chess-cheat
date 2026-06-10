@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chess Cheat (by mrmo7ox)</title>
+    <link rel="icon" type="image/png" href="logo.png" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <nav class="sidebar">
+        <div class="brand">
+          <div class="brand-dot"></div>
+          <img
+            src="./logo.png"
+            alt="chess cheat"
+            style="height: 75px; width: auto; margin-right: 8px"
+          />
+        </div>
+        <ul class="nav-links">
+          <li class="active" data-target="general">General</li>
+          <li data-target="keybinds">Keybinds</li>
+          <li data-target="account">Account</li>
+          <li data-target="about">About</li>
+        </ul>
+        <div class="sidebar-footer">
+          <span id="status-indicator" class="status idle">IDLE</span>
+        </div>
+      </nav>
+
+      <main class="content">
+        <section id="general" class="tab-pane active">
+          <h1 class="page-title">General Settings</h1>
+
+          <div class="bento-grid">
+            <div class="card">
+              <h3>Engine Configuration</h3>
+
+              <div class="control-group">
+                <label>Stockfish Path</label>
+                <div style="display: flex; gap: 10px">
+                  <input
+                    type="text"
+                    id="stockfish_path"
+                    class="input-box"
+                    placeholder="Auto-detect / download"
+                    style="flex: 1"
+                  />
+                  <button id="browse-stockfish" class="btn secondary small">
+                    Browse
+                  </button>
+                </div>
+                <small style="color: #666"
+                  >Leave empty to auto-detect or download Stockfish</small
+                >
+              </div>
+
+              <div class="control-group">
+                <label>Browser Executable Path</label>
+                <div style="display: flex; gap: 10px">
+                  <input
+                    type="text"
+                    id="browser_path"
+                    class="input-box"
+                    placeholder="C:\Path\to\browser.exe"
+                    style="flex: 1"
+                  />
+                  <button id="browse-browser" class="btn secondary small">
+                    Browse
+                  </button>
+                </div>
+                <small style="color: #666"
+                  >Leave empty to auto-detect Brave/Chrome/Edge</small
+                >
+              </div>
+
+              <div class="control-group">
+                <label
+                  >Calculation Depth:
+                  <span id="depth-val" class="highlight">9</span></label
+                >
+                <input type="range" id="depth" min="1" max="25" value="9" />
+                <button
+                  id="apply-depth"
+                  class="btn secondary small"
+                  style="margin-top: 8px; width: auto"
+                >
+                  Apply Depth Now
+                </button>
+              </div>
+
+              <div class="control-group">
+                <label>Operation Mode</label>
+                <select id="play_mode">
+                  <option value="Auto-Play">Auto-Play (Full)</option>
+                  <option value="Assist">Assist (Highlight)</option>
+                </select>
+              </div>
+
+              <div
+                class="control-group"
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-top: 25px;
+                "
+              >
+                <label style="margin: 0">Assist Color</label>
+                <input
+                  type="color"
+                  id="highlight_color"
+                  value="#ff2a2a"
+                  style="
+                    width: 40px;
+                    height: 30px;
+                    padding: 0;
+                    border: none;
+                    cursor: pointer;
+                  "
+                />
+              </div>
+
+              <!-- Delay -->
+              <div class="control-group" style="margin-top: 15px">
+                <label
+                  >Assist Disappear Delay:
+                  <span id="delay-val" class="highlight">1800ms</span></label
+                >
+                <input
+                  type="range"
+                  id="assist_delay"
+                  min="500"
+                  max="5000"
+                  step="100"
+                  value="1800"
+                />
+              </div>
+
+              <button
+                id="save-general"
+                class="btn primary"
+                style="margin-top: 20px; width: 100%"
+              >
+                Save General Settings
+              </button>
+            </div>
+
+            <div class="card execution-card">
+              <h3>Execution Phase</h3>
+              <button id="btn-open" class="btn secondary mb-3">
+                1. Launch & Login
+              </button>
+              <button id="btn-inject" class="btn primary glow">
+                2. Inject Active Page
+              </button>
+
+              <div
+                style="
+                  margin-top: 25px;
+                  border-top: 1px solid rgba(255, 42, 42, 0.2);
+                  padding-top: 20px;
+                "
+              >
+                <button
+                  id="btn-stop"
+                  class="btn"
+                  style="
+                    background: #400;
+                    color: #ffaaaa;
+                    border: 1px solid #f00;
+                  "
+                >
+                  ■ STOP ENGINE
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card log-card mt-4">
+            <h3>System Logs</h3>
+            <div id="log" class="terminal">
+              <div>
+                <span class="time">[SYS]</span> Interface loaded successfully.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="keybinds" class="tab-pane">
+          <h1 class="page-title">Keybind Mapping</h1>
+          <div class="card">
+            <table class="keybind-table">
+              <thead>
+                <tr>
+                  <th>Action</th>
+                  <th>Keybind</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Force Next Move</td>
+                  <td>
+                    <input
+                      type="text"
+                      id="hotkey-next"
+                      class="input-inline"
+                      readonly
+                      placeholder="Click & Press keys..."
+                    />
+                  </td>
+                  <td><span class="badge active">Active</span></td>
+                </tr>
+                <tr>
+                  <td>Toggle Auto-Play</td>
+                  <td>
+                    <input
+                      type="text"
+                      id="hotkey-toggle"
+                      class="input-inline"
+                      value="Alt + T"
+                      readonly
+                      placeholder="Click & Press keys..."
+                    />
+                  </td>
+                  <td><span class="badge active">Active</span></td>
+                </tr>
+                <tr>
+                  <td>Panic Button (Hide)</td>
+                  <td>
+                    <input
+                      type="text"
+                      id="hotkey-hide"
+                      class="input-inline"
+                      value="F12"
+                      readonly
+                      placeholder="Click & Press keys..."
+                    />
+                  </td>
+                  <td><span class="badge active">Active</span></td>
+                </tr>
+              </tbody>
+            </table>
+            <button id="save-binds" class="btn primary mt-4">
+              Save Keybinds
+            </button>
+          </div>
+        </section>
+
+        <section id="account" class="tab-pane">
+          <h1 class="page-title">Authentication</h1>
+          <div class="card profile-card">
+            <div class="profile-header">
+              <div class="avatar"></div>
+              <div>
+                <p class="subtitle">Connected as</p>
+                <h2 id="display-user">Loading...</h2>
+              </div>
+              <button id="edit-acc-btn" class="btn secondary small ml-auto">
+                Edit Credentials
+              </button>
+            </div>
+
+            <div id="edit-acc-form" class="edit-form hidden mt-4">
+              <div class="control-group">
+                <label>Username</label>
+                <input type="text" id="inp-user" class="input-box" />
+              </div>
+              <div class="control-group">
+                <label>Password</label>
+                <input type="password" id="inp-pass" class="input-box" />
+              </div>
+              <button id="save-acc-btn" class="btn primary mt-2">
+                Update JSON
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section id="about" class="tab-pane">
+          <h1 class="page-title">About Developer</h1>
+          <div class="card about-card">
+            <h2>Mohamed Elouardi <span class="tag">mrmo7ox</span></h2>
+            <p class="bio">
+              Security Researcher & Developer | 1337 Coding School
+            </p>
+
+            <div class="social-links mt-4">
+              <a
+                href="https://mrmo7ox.github.io"
+                target="_blank"
+                class="btn-link"
+              >
+                🌐 mrmo7ox.github.io
+              </a>
+              <a
+                href="https://github.com/mrmo7ox"
+                target="_blank"
+                class="btn-link"
+              >
+                💻 GitHub Profile
+              </a>
+            </div>
+            <div class="mt-4 tech-stack">
+              <span class="badge">C++</span>
+              <span class="badge">Python</span>
+              <span class="badge">Reverse Engineering</span>
+              <span class="badge">CTF</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>
